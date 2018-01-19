@@ -1,0 +1,6 @@
+*.out
+*.gif
+*.jpeg
+*.bak
+*.test
+tmp_conf.yml
