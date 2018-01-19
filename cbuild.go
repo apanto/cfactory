@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "bufio"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -185,13 +186,32 @@ func (b *Builder) buildFromGithub(repo string, authkey string, imagename string)
 		ForceRemove:   true,
 	}
 
+	log.Printf("Building %s...\n", tag)
 	response, err := b.docker.ImageBuild(context.Background(), nil, options)
 	if err != nil {
 		panic(err)
 	}
-	response_body, _ := ioutil.ReadAll(response.Body)
-	fmt.Printf("OSType: %s\n", response.OSType)
-	fmt.Println(string(response_body))
+
+	// type Message struct {
+	// 	stream string, `json:"stream"`
+	// }
+
+	// var m Message
+	d := json.NewDecoder(response.Body)
+	for {
+		var v map[string]interface{}
+		if err = d.Decode(&v); err != nil {
+			log.Println(err)
+			break
+		}
+		for k := range v {
+			if k == "stream" {
+				fmt.Printf("%s", v["stream"].(string))
+			}
+			//fmt.Printf("%#v\n", v)
+		}
+
+	}
 
 	b.imagename = imagename
 
