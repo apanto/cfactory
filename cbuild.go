@@ -205,8 +205,11 @@ func (b *Builder) buildFromGithub(repo string, authkey string, imagename string)
 			break
 		}
 		for k := range v {
-			if k == "stream" {
-				fmt.Printf("%s", v["stream"].(string))
+			switch k {
+			case "stream":
+				log.Printf("%s", v["stream"].(string))
+			case "aux":
+				log.Printf("(aux)%s", v["stream"].(string))
 			}
 			//fmt.Printf("%#v\n", v)
 		}
